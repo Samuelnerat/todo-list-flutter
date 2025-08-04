@@ -1,5 +1,6 @@
 import 'package:crud_app/todo_model.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'controller.dart';
 
 class TodosList extends StatelessWidget {
@@ -146,43 +147,29 @@ class TodosList extends StatelessWidget {
   }
 
   void _showDeleteConfirmation(Todo todo) {
-    showDialog(
-      context: controller.todos.values.first as BuildContext? ?? 
-             controller.todos.keys.first as BuildContext,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF1A1A2E),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+  Get.dialog(
+    AlertDialog(
+      backgroundColor: const Color(0xFF1A1A2E),
+      title: Text("Delete Todo", style: TextStyle(color: Colors.white)),
+      content: Text("Are you sure you want to delete this?", style: TextStyle(color: Colors.white70)),
+      actions: [
+        TextButton(
+          child: Text("Cancel"),
+          onPressed: () => Get.back(),
         ),
-        title: const Text(
-          'Delete Task',
-          style: TextStyle(color: Colors.white),
+        ElevatedButton(
+          onPressed: () {
+            Get.find<Controller>().deleteTodo(todo.id);
+            Get.back(); // Close dialog
+          },
+          child: Text("Delete"),
         ),
-        content: Text(
-          'Are you sure you want to delete "${todo.title}"?',
-          style: const TextStyle(color: Colors.white70),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(color: Color(0xFF9A7FB8)),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              controller.deleteTodo(todo.id);
-              Navigator.of(context).pop();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent,
-            ),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
+      ],
+    ),
+  );
+// }
+
+
   }
 
   Widget _buildEmptyState() {
